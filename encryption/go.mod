@@ -5,7 +5,6 @@ go 1.22.2
 require (
 	github.com/HACKERALERT/infectious v0.0.0-20240622035800-1b100aa35681
 	github.com/HACKERALERT/serpent v0.0.0-20210716182301-293b29869c66
-	github.com/pkg/errors v0.9.1
 	golang.org/x/crypto v0.24.0
 )
 

@@ -1,7 +1,7 @@
 package encryption
 
 import (
-	"github.com/pkg/errors"
+	"errors"
 	"golang.org/x/crypto/argon2"
 	"golang.org/x/crypto/hkdf"
 	"golang.org/x/crypto/sha3"

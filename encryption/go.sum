@@ -2,8 +2,6 @@ github.com/HACKERALERT/infectious v0.0.0-20240622035800-1b100aa35681 h1:LOILOeWl
 github.com/HACKERALERT/infectious v0.0.0-20240622035800-1b100aa35681/go.mod h1:ZGuTcvIkN3f3CPe2PmI4hqVfKD/253FCvrQGDJ+Ca9E=
 github.com/HACKERALERT/serpent v0.0.0-20210716182301-293b29869c66 h1:YDpFq+y6mRcu97rn/rhYg8u8FdeO0wzTuLgM2gVkA+c=
 github.com/HACKERALERT/serpent v0.0.0-20210716182301-293b29869c66/go.mod h1:d/+9q3sIxtIyOgHNgFGr3yGBKKVn5h3vL4hV1qlmoLs=
-github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
-github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 golang.org/x/crypto v0.24.0 h1:mnl8DM0o513X8fdIkmyFE/5hTYxbwYOjDS/+rK6qpRI=
 golang.org/x/crypto v0.24.0/go.mod h1:Z1PMYSOR5nyMcyAVAIQSKCDwalqy85Aqn1x3Ws4L5DM=
 golang.org/x/sys v0.21.1-0.20240613073215-348425aa18d7 h1:B6QS9SNS7Nzwt/K5jmuPlD3XrW5N3XzPMzF70DSMjKI=
