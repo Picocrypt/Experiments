@@ -2,8 +2,26 @@ package encryption
 
 import (
 	"crypto/rand"
+	"io"
 	"math/big"
 )
+
+func GenKeyfile(length int, w io.Writer) error {
+	for length > 0 {
+		size := length
+		if size > (1 << 20) { // limit to 1 MiB at a time for memory
+			size = 1 << 20
+		}
+		tmp := make([]byte, size)
+		rand.Read(tmp)
+		_, err := w.Write(tmp)
+		if err != nil {
+			return err
+		}
+		length -= size
+	}
+	return nil
+}
 
 func GenPassword(length int, upper, lower, number, symbol bool) string {
 	chars := ""
