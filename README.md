@@ -23,7 +23,7 @@ done on each 1 MiB block at a time.
 ## reed_solomon.go
 
 This file handles all of the reed solomon encryption/decryption work. In main
-picocrypt, it is up to the high levle program logic to always use 128/136 byte
+picocrypt, it is up to the high level program logic to always use 128/136 byte
 blocks. In this refactor, I moved that responsibility to the RSEncoder and
 RSDecoder classes. The caller can pass any number of bytes to RSEncoder.Encode,
 and any extra bytes beyond the 128 byte chunks will be cached internally and
@@ -41,7 +41,7 @@ chunk. Looking for feedback on thoughts about this tradeoff.
 In main picocrypt, the files are decoded first by assuming the first 128 bytes
 are correct, and if the auth tag does not match at the end, then run the entire
 file again but force rs decoding. The reason for two passes is that decryption
-is very slow, and usually not present, so assume the best and go fast. This 
+is very slow, and usually not needed, so assume the best and go fast. This 
 presents a problem for the no-tmp-file design, because I do not want to have to 
 make two passes over the data. An alternative option is to read in the first
 128 bytes and just re-encode them, seeing if that matches the current 136 bytes.
