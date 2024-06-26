@@ -5,9 +5,15 @@ import (
 	"github.com/HACKERALERT/infectious"
 )
 
-func rsEncode(dst, src []byte) {
+func rsEncodeHeader(dst, src []byte) {
 	rs, _ := infectious.NewFEC(len(src), len(dst))
 	rs.Encode(src, func(s infectious.Share) { dst[s.Number] = s.Data[0] })
+}
+
+var rs128, _ = infectious.NewFEC(128, 136)
+
+func rsEncodeBody(dst, src []byte) {
+	rs128.Encode(src, func(s infectious.Share) { dst[s.Number] = s.Data[0] })
 }
 
 type RSEncoder struct {
@@ -19,7 +25,7 @@ func (r *RSEncoder) Encode(data []byte) []byte {
 	nChunks := len(r.buffer) / 128
 	rsData := make([]byte, nChunks*136)
 	for i := 0; i < nChunks; i++ {
-		rsEncode(rsData[i*136:(i+1)*136], r.buffer[i*128:(i+1)*128])
+		rsEncodeBody(rsData[i*136:(i+1)*136], r.buffer[i*128:(i+1)*128])
 	}
 	r.buffer = r.buffer[nChunks*128:]
 	return rsData
@@ -31,16 +37,19 @@ func (r *RSEncoder) Flush() []byte {
 		padding[i] = byte(128 - len(r.buffer))
 	}
 	dst := make([]byte, 136)
-	rsEncode(dst, append(r.buffer, padding...))
+	rsEncodeBody(dst, append(r.buffer, padding...))
 	return dst
 }
 
-func rsDecode(dst, src []byte) error {
-	rs, _ := infectious.NewFEC(len(dst), len(src))
+func rsDecode(rs *infectious.FEC, dst, src []byte) error {
 	// Encoding is much faster than decoding. Try re-encoding the original
 	// bytes and if the result matches, there must have been no corruption.
 	recoded := make([]byte, len(src))
-	rsEncode(recoded, src[:len(dst)])
+	if len(src) == 136 {
+		rsEncodeBody(recoded, src[:len(dst)])
+	} else {
+		rsEncodeHeader(recoded, src[:len(dst)])
+	}
 	if arrMatch(recoded, src) {
 		copy(dst, src[:len(dst)])
 		return nil
@@ -61,6 +70,15 @@ func rsDecode(dst, src []byte) error {
 	return ErrCorrupted
 }
 
+func rsDecodeHeader(dst, src []byte) error {
+	rs, _ := infectious.NewFEC(len(dst), len(src))
+	return rsDecode(rs, dst, src)
+}
+
+func rsDecodeBody(dst, src []byte) error {
+	return rsDecode(rs128, dst, src)
+}
+
 type RSDecoder struct {
 	buffer []byte
 }
@@ -76,7 +94,7 @@ func (r *RSDecoder) Decode(data []byte) ([]byte, error) {
 	for i := 0; i < nChunks; i++ {
 		src := r.buffer[i*136 : (i+1)*136]
 		dst := rsData[i*128 : (i+1)*128]
-		err := rsDecode(dst, src)
+		err := rsDecodeBody(dst, src)
 		if errors.Is(err, ErrCorrupted) {
 			decodeErr = err
 		} else if decodeErr == nil {
@@ -89,7 +107,7 @@ func (r *RSDecoder) Decode(data []byte) ([]byte, error) {
 
 func (r *RSDecoder) Flush() ([]byte, error) {
 	res := make([]byte, 128)
-	err := rsDecode(res, r.buffer)
+	err := rsDecodeBody(res, r.buffer)
 	data := r.buffer[:128-int(res[127])]
 	return data, err
 }
