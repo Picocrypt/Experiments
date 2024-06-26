@@ -21,3 +21,13 @@ tmp files entirely. All of the current data processing picocrypt does can be
 done on each 1 MiB block at a time.
 
 TODO: give brief overview of each source file here
+
+TODO: add tests
+
+TODO: add documentation
+
+TODO: add standard zip file support
+
+TODO: add recursive zip file support
+
+TODO: add file chunk support
