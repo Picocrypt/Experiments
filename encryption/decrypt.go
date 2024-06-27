@@ -19,7 +19,7 @@ type Decryptor struct {
 	mac      hash.Hash
 	ec       *EncryptionCipher
 	deny     *Deniability
-	rs       *RSDecoder
+	rs       *RSBodyDecoder
 	macTag   []byte
 
 	headerMask []byte
@@ -89,7 +89,7 @@ func readFromHeader(r io.Reader, size int, deny *Deniability) ([]byte, error) {
 		deny.Deny(tmp)
 	}
 	data := make([]byte, size)
-	err = rsDecodeHeader(data, tmp)
+	err = RSDecode(data, tmp)
 	if errors.Is(err, ErrCorrupted) {
 		return tmp, err
 	}
@@ -177,9 +177,9 @@ func NewDecryptor(
 		return nil, err
 	}
 
-	var rs *RSDecoder
+	var rs *RSBodyDecoder
 	if components[2][3] == 1 { // reed solomon bit is set
-		rs = &RSDecoder{}
+		rs = &RSBodyDecoder{}
 	}
 
 	var mac hash.Hash

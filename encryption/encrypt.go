@@ -16,7 +16,7 @@ type Writer struct {
 	mac                hash.Hash
 	ec                 *EncryptionCipher
 	deny               *Deniability
-	rs                 *RSEncoder
+	rs                 *RSBodyEncoder
 	comments           string
 	writtenSinceHeader int
 	headerMask         []byte
@@ -135,7 +135,7 @@ func (w *Writer) makeHeader() []byte {
 	header := make([]byte, 789+len(w.comments)*3)
 	written := 0
 	for _, d := range data {
-		rsEncodeHeader(header[written:written+len(d)*3], d)
+		RSEncode(header[written:written+len(d)*3], d)
 		written += len(d) * 3
 	}
 	return header
@@ -198,9 +198,9 @@ func NewWriter(ep EncryptionParams) (*Writer, error) {
 		deny = nil
 	}
 
-	var rs *RSEncoder
+	var rs *RSBodyEncoder
 	if ep.ReedSolomon {
-		rs = &RSEncoder{}
+		rs = &RSBodyEncoder{}
 	}
 
 	return &Writer{

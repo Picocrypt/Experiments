@@ -8,7 +8,7 @@ import (
 
 func TestRS(t *testing.T) {
 	// pushing data thru the encoder at any size should work
-	encoder := &RSEncoder{}
+	encoder := &RSBodyEncoder{}
 	origData := []byte{}
 	encodedData := []byte{}
 	for i := 0; i < 300; i++ {
@@ -26,7 +26,7 @@ func TestRS(t *testing.T) {
 	}
 
 	// decoding the encoded data should work without error
-	decoder := &RSDecoder{}
+	decoder := &RSBodyDecoder{}
 	decodedData := []byte{}
 	idx := 0
 	for i := 0; i < 300; i++ {
@@ -58,7 +58,7 @@ func TestRS(t *testing.T) {
 	// a small error should be recoverable
 	damagedData := make([]byte, len(origData))
 	damagedData[5] = damagedData[5] + 1
-	decoder = &RSDecoder{}
+	decoder = &RSBodyDecoder{}
 	_, err = decoder.Decode(damagedData)
 	if !errors.Is(err, ErrRecoverable) {
 		t.Fatal(err)
